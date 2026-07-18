@@ -138,7 +138,7 @@
                             nextPrayerTime = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, subuhParts[0], subuhParts[1], 0);
                         }
 
-                        $('#next-prayer-name').text('Menunggu waktu sholat ' + nextPrayer);
+                        $('#next-prayer-name').text('Menjelang ' + nextPrayer);
 
                         var diff = nextPrayerTime - now;
                         if (diff < 0) diff = 0;
