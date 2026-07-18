@@ -212,9 +212,18 @@ h4, h5, h6, .h4, .h5, .h6 {
 
 .hero-header .hero-header-inner {
     padding: 3rem;
-    background: rgba(255, 255, 255, .25);
-}
 
+    background: rgba(255, 255, 255, 0.18);
+
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+
+    border: 1px solid rgba(255,255,255,.30);
+
+    border-radius: 20px;
+
+    box-shadow: 0 12px 35px rgba(0,0,0,.15);
+}
 @media (max-width: 992px) {
     .hero-header {
         padding-top: 12rem;
