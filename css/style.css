@@ -139,7 +139,14 @@ h4, h5, h6, .h4, .h5, .h6 {
 }
 
 .navbar {
-    border-bottom: 1px solid rgba(255, 255, 255, .5);
+    background: rgba(255,255,255,.12);
+
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+
+    border-bottom: 1px solid rgba(255,255,255,.25);
+
+    box-shadow: 0 10px 25px rgba(0,0,0,.08);
 }
 
 .navbar .navbar-nav .nav-link {
