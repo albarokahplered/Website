@@ -179,6 +179,12 @@ h4, h5, h6, .h4, .h5, .h6 {
         0 4px 16px rgba(0,0,0,.25);
 }
 
+.fixed-top.bg-white .navbar-brand h1,
+.fixed-top.bg-white .navbar-brand h1 .text-primary,
+.fixed-top.bg-white .navbar-brand:hover h1 {
+    text-shadow: none !important;
+}
+
 .fixed-top {
     transition: .5s;
 }
