@@ -79,7 +79,7 @@
     // Fetch Jadwal Sholat
     if ($('#jadwal-sholat-container').length > 0) {
         $.ajax({
-            url: 'https://api.aladhan.com/v1/timingsByCity?city=Purwakarta&country=Indonesia&method=20',
+            url: 'https://api.aladhan.com/v1/timings?latitude=-7.653772&longitude=109.046875&method=20',
             method: 'GET',
             success: function(response) {
                 if (response.code === 200) {
@@ -112,6 +112,50 @@
                     });
                     
                     $('#jadwal-sholat-container').html(html);
+                    $('#countdown-container').fadeIn();
+                    
+                    function updateCountdown() {
+                        var now = new Date();
+                        var nextPrayer = null;
+                        var nextPrayerTime = null;
+
+                        for (var i = 0; i < sholatList.length; i++) {
+                            if (sholatList[i].name === 'Imsak') continue; // Optional: skip imsak for main countdown
+                            
+                            var timeParts = sholatList[i].time.split(':');
+                            var pTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), timeParts[0], timeParts[1], 0);
+                            
+                            if (pTime > now) {
+                                nextPrayer = sholatList[i].name;
+                                nextPrayerTime = pTime;
+                                break;
+                            }
+                        }
+
+                        if (!nextPrayer) {
+                            nextPrayer = 'Subuh';
+                            var subuhParts = timings.Fajr.split(':');
+                            nextPrayerTime = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, subuhParts[0], subuhParts[1], 0);
+                        }
+
+                        $('#next-prayer-name').text('Menunggu waktu sholat ' + nextPrayer);
+
+                        var diff = nextPrayerTime - now;
+                        if (diff < 0) diff = 0;
+                        
+                        var hours = Math.floor(diff / (1000 * 60 * 60));
+                        var mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                        var secs = Math.floor((diff % (1000 * 60)) / 1000);
+
+                        hours = (hours < 10) ? "0" + hours : hours;
+                        mins = (mins < 10) ? "0" + mins : mins;
+                        secs = (secs < 10) ? "0" + secs : secs;
+
+                        $('#prayer-countdown').text('-' + hours + ':' + mins + ':' + secs);
+                    }
+
+                    updateCountdown();
+                    setInterval(updateCountdown, 1000);
                 }
             },
             error: function() {
