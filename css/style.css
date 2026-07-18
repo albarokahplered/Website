@@ -184,10 +184,17 @@ h4, h5, h6, .h4, .h5, .h6 {
 }
 
 .navbar {
-    padding-left:0;
-    padding-right:0;
+    padding-left: 15px !important;
+    padding-right: 15px !important;
     position: relative;
     background: transparent;
+}
+
+@media (min-width: 992px) {
+    .navbar-nav {
+        margin-left: auto !important;
+        margin-right: 1.5rem !important;
+    }
 }
 
 .navbar::before {
@@ -196,15 +203,15 @@ h4, h5, h6, .h4, .h5, .h6 {
     top: 0;
     bottom: 0;
 
-    left: -20px;
-    right: -20px;
+    left: 0;
+    right: 0;
 
     background: rgba(255,255,255,.12);
 
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
 
-    border-bottom: 1px solid rgba(255,255,255,.25);
+    border: 1px solid rgba(255,255,255,.25);
     box-shadow: 0 10px 25px rgba(0,0,0,.08);
 
     z-index: -1;
