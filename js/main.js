@@ -76,5 +76,49 @@
         }
     });
 
+    // Fetch Jadwal Sholat
+    if ($('#jadwal-sholat-container').length > 0) {
+        $.ajax({
+            url: 'https://api.aladhan.com/v1/timingsByCity?city=Purwakarta&country=Indonesia&method=20',
+            method: 'GET',
+            success: function(response) {
+                if (response.code === 200) {
+                    var timings = response.data.timings;
+                    var hijri = response.data.date.hijri;
+                    var gregorian = response.data.date.gregorian;
+                    
+                    var dateStr = hijri.day + ' ' + hijri.month.en + ' ' + hijri.year + ' H / ' + gregorian.day + ' ' + gregorian.month.en + ' ' + gregorian.year;
+                    $('#tanggal-hijriah').text(dateStr);
+                    
+                    var sholatList = [
+                        { name: 'Imsak', time: timings.Imsak },
+                        { name: 'Subuh', time: timings.Fajr },
+                        { name: 'Dzuhur', time: timings.Dhuhr },
+                        { name: 'Ashar', time: timings.Asr },
+                        { name: 'Maghrib', time: timings.Maghrib },
+                        { name: 'Isya', time: timings.Isha }
+                    ];
+                    
+                    var html = '';
+                    sholatList.forEach(function(sholat) {
+                        html += `
+                        <div class="col-6 col-sm-4 col-md-4 mb-2">
+                            <div class="rounded p-3 text-center shadow-sm" style="background: rgba(255,255,255,0.45); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.4);">
+                                <h6 class="mb-2 text-dark" style="font-size: 0.95rem;">${sholat.name}</h6>
+                                <h4 class="mb-0 text-primary" style="font-weight: 700; text-shadow: 0 1px 2px rgba(0,0,0,0.15);">${sholat.time}</h4>
+                            </div>
+                        </div>
+                        `;
+                    });
+                    
+                    $('#jadwal-sholat-container').html(html);
+                }
+            },
+            error: function() {
+                $('#tanggal-hijriah').text('Gagal memuat jadwal sholat');
+            }
+        });
+    }
+
 })(jQuery);
 
