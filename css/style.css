@@ -643,7 +643,7 @@ h4, h5, h6, .h4, .h5, .h6 {
 @media (max-width: 991.98px) {
     /* Navbar Logo and Text */
     .navbar-brand img {
-        max-height: 40px !important;
+        max-height: 30px !important;
         margin-right: 8px !important;
     }
     .navbar-brand h1 {
