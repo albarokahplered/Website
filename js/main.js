@@ -164,5 +164,105 @@
         });
     }
 
+    // Islamic Event Calendar (for 404 page)
+    if ($('#event-calendar-container').length > 0) {
+        initEventCalendar();
+    }
+
+    function initEventCalendar() {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = today.getMonth() + 1;
+        
+        $.ajax({
+            url: `https://api.aladhan.com/v1/calendarByCity?city=Purwakarta&country=Indonesia&method=20&month=${month}&year=${year}`,
+            method: 'GET',
+            success: function(response) {
+                if (response.code === 200 && response.data) {
+                    renderCalendar(response.data, year, month);
+                } else {
+                    $('#event-calendar-container').html('<p class="text-danger text-center">Gagal memuat kalender.</p>');
+                }
+            },
+            error: function() {
+                $('#event-calendar-container').html('<p class="text-danger text-center">Terjadi kesalahan koneksi.</p>');
+            }
+        });
+    }
+
+    function renderCalendar(data, year, month) {
+        const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+        const dayNames = ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"];
+        
+        let html = `
+            <div class="calendar-wrapper">
+                <h4 class="text-dark text-center mb-3 fw-bold">${monthNames[month - 1]} ${year}</h4>
+                <div class="row g-1 text-center fw-bold text-primary mb-2" style="font-size: 0.9rem;">
+        `;
+        
+        dayNames.forEach(d => {
+            html += `<div class="col"><div class="py-1">${d}</div></div>`;
+        });
+        html += `</div><div class="row g-1 text-center">`;
+        
+        const firstDay = new Date(year, month - 1, 1).getDay(); 
+        
+        for (let i = 0; i < firstDay; i++) {
+            html += `<div class="col"><div class="p-2"></div></div>`;
+        }
+        
+        let currentDayOfWeek = firstDay;
+        data.forEach(day => {
+            if (currentDayOfWeek === 7) {
+                html += `</div><div class="row g-1 text-center mt-1">`;
+                currentDayOfWeek = 0;
+            }
+            
+            const gDay = day.date.gregorian.day;
+            const hDay = day.date.hijri.day;
+            const holidays = day.date.hijri.holidays || [];
+            const hasHoliday = holidays.length > 0;
+            
+            let bgClass = "bg-white";
+            let tooltip = "";
+            let holidayIndicator = "";
+            let textClass = "text-dark";
+            
+            if (hasHoliday) {
+                bgClass = "bg-primary text-white border-primary";
+                textClass = "text-white";
+                tooltip = `title="${holidays.join(', ')}"`;
+                holidayIndicator = `<div style="font-size: 0.55rem; line-height: 1; margin-top: 3px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%;">${holidays[0]}</div>`;
+            }
+            
+            html += `
+                <div class="col">
+                    <div class="rounded p-1 shadow-sm ${bgClass} d-flex flex-column justify-content-center align-items-center" style="height: 55px; border: 1px solid rgba(0,0,0,0.05); cursor: pointer;" ${tooltip} data-bs-toggle="tooltip" data-bs-placement="top">
+                        <span class="fw-bold ${textClass}" style="font-size: 1rem; line-height: 1;">${parseInt(gDay)}</span>
+                        <span class="${hasHoliday ? 'text-white-50' : 'text-muted'}" style="font-size: 0.65rem; line-height: 1; margin-top: 2px;">${parseInt(hDay)}</span>
+                        ${holidayIndicator}
+                    </div>
+                </div>
+            `;
+            
+            currentDayOfWeek++;
+        });
+        
+        while (currentDayOfWeek < 7) {
+            html += `<div class="col"><div class="p-2"></div></div>`;
+            currentDayOfWeek++;
+        }
+        
+        html += `</div></div>`;
+        $('#event-calendar-container').html(html);
+        
+        if (typeof bootstrap !== 'undefined') {
+            const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+        }
+    }
+
 })(jQuery);
 
