@@ -638,3 +638,27 @@ h4, h5, h6, .h4, .h5, .h6 {
     margin-bottom: 0;
     letter-spacing: 1px;
 }
+
+/* Mobile Adjustments */
+@media (max-width: 991.98px) {
+    /* Navbar Logo and Text */
+    .navbar-brand img {
+        max-height: 40px !important;
+        margin-right: 8px !important;
+    }
+    .navbar-brand h1 {
+        font-size: 1.25rem !important;
+    }
+    
+    /* Jadwal Sholat Widget */
+    #jadwal-sholat-container .col-6 h4 {
+        font-size: 1.1rem !important;
+    }
+    #jadwal-sholat-container .col-6 h6 {
+        font-size: 0.8rem !important;
+        margin-bottom: 0.25rem !important;
+    }
+    #jadwal-sholat-container .rounded.p-3 {
+        padding: 0.75rem !important;
+    }
+}
