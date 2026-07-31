@@ -165,14 +165,22 @@
     }
 
     // Islamic Event Calendar (for 404 page)
+    let currentCalendarYear, currentCalendarMonth;
+
     if ($('#event-calendar-container').length > 0) {
-        initEventCalendar();
+        const today = new Date();
+        currentCalendarYear = today.getFullYear();
+        currentCalendarMonth = today.getMonth() + 1;
+        fetchAndRenderCalendar(currentCalendarYear, currentCalendarMonth);
     }
 
-    function initEventCalendar() {
-        const today = new Date();
-        const year = today.getFullYear();
-        const month = today.getMonth() + 1;
+    function fetchAndRenderCalendar(year, month) {
+        $('#event-calendar-container').html(`
+            <div class="text-center">
+                <div class="spinner-border text-primary" role="status"></div>
+                <p class="mt-2 text-dark">Memuat Kalender Event...</p>
+            </div>
+        `);
         
         $.ajax({
             url: `https://api.aladhan.com/v1/calendarByCity?city=Purwakarta&country=Indonesia&method=20&month=${month}&year=${year}`,
@@ -190,13 +198,35 @@
         });
     }
 
+    $(document).on('click', '.calendar-prev-month', function() {
+        currentCalendarMonth--;
+        if (currentCalendarMonth < 1) {
+            currentCalendarMonth = 12;
+            currentCalendarYear--;
+        }
+        fetchAndRenderCalendar(currentCalendarYear, currentCalendarMonth);
+    });
+
+    $(document).on('click', '.calendar-next-month', function() {
+        currentCalendarMonth++;
+        if (currentCalendarMonth > 12) {
+            currentCalendarMonth = 1;
+            currentCalendarYear++;
+        }
+        fetchAndRenderCalendar(currentCalendarYear, currentCalendarMonth);
+    });
+
     function renderCalendar(data, year, month) {
         const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
         const dayNames = ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"];
         
         let html = `
             <div class="calendar-wrapper">
-                <h4 class="text-dark text-center mb-3 fw-bold">${monthNames[month - 1]} ${year}</h4>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <button class="btn btn-sm btn-outline-primary calendar-prev-month"><i class="fa fa-chevron-left"></i></button>
+                    <h4 class="text-dark text-center mb-0 fw-bold">${monthNames[month - 1]} ${year}</h4>
+                    <button class="btn btn-sm btn-outline-primary calendar-next-month"><i class="fa fa-chevron-right"></i></button>
+                </div>
                 <div style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px;">
         `;
         
