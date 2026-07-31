@@ -197,27 +197,20 @@
         let html = `
             <div class="calendar-wrapper">
                 <h4 class="text-dark text-center mb-3 fw-bold">${monthNames[month - 1]} ${year}</h4>
-                <div class="row g-1 text-center fw-bold text-primary mb-2" style="font-size: 0.9rem;">
+                <div style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px;">
         `;
         
         dayNames.forEach(d => {
-            html += `<div class="col"><div class="py-1">${d}</div></div>`;
+            html += `<div class="text-center fw-bold text-primary py-1" style="font-size: 0.9rem;">${d}</div>`;
         });
-        html += `</div><div class="row g-1 text-center">`;
         
         const firstDay = new Date(year, month - 1, 1).getDay(); 
         
         for (let i = 0; i < firstDay; i++) {
-            html += `<div class="col"><div class="p-2"></div></div>`;
+            html += `<div></div>`;
         }
         
-        let currentDayOfWeek = firstDay;
         data.forEach(day => {
-            if (currentDayOfWeek === 7) {
-                html += `</div><div class="row g-1 text-center mt-1">`;
-                currentDayOfWeek = 0;
-            }
-            
             const gDay = day.date.gregorian.day;
             const hDay = day.date.hijri.day;
             const holidays = day.date.hijri.holidays || [];
@@ -232,26 +225,17 @@
                 bgClass = "bg-primary text-white border-primary";
                 textClass = "text-white";
                 tooltip = `title="${holidays.join(', ')}"`;
-                holidayIndicator = `<div style="font-size: 0.55rem; line-height: 1; margin-top: 3px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%;">${holidays[0]}</div>`;
+                holidayIndicator = `<div style="font-size: 0.55rem; line-height: 1; margin-top: 3px; width: 100%; text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${holidays[0]}</div>`;
             }
             
             html += `
-                <div class="col">
-                    <div class="rounded p-1 shadow-sm ${bgClass} d-flex flex-column justify-content-center align-items-center" style="height: 55px; border: 1px solid rgba(0,0,0,0.05); cursor: pointer;" ${tooltip} data-bs-toggle="tooltip" data-bs-placement="top">
-                        <span class="fw-bold ${textClass}" style="font-size: 1rem; line-height: 1;">${parseInt(gDay)}</span>
-                        <span class="${hasHoliday ? 'text-white-50' : 'text-muted'}" style="font-size: 0.65rem; line-height: 1; margin-top: 2px;">${parseInt(hDay)}</span>
-                        ${holidayIndicator}
-                    </div>
+                <div class="rounded p-1 shadow-sm ${bgClass} d-flex flex-column justify-content-center align-items-center" style="height: 55px; border: 1px solid rgba(0,0,0,0.05); cursor: pointer; min-width: 0;" ${tooltip} data-bs-toggle="tooltip" data-bs-placement="top">
+                    <span class="fw-bold ${textClass}" style="font-size: 1rem; line-height: 1;">${parseInt(gDay)}</span>
+                    <span class="${hasHoliday ? 'text-white-50' : 'text-muted'}" style="font-size: 0.65rem; line-height: 1; margin-top: 2px;">${parseInt(hDay)}</span>
+                    ${holidayIndicator}
                 </div>
             `;
-            
-            currentDayOfWeek++;
         });
-        
-        while (currentDayOfWeek < 7) {
-            html += `<div class="col"><div class="p-2"></div></div>`;
-            currentDayOfWeek++;
-        }
         
         html += `</div></div>`;
         $('#event-calendar-container').html(html);
