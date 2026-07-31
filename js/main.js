@@ -175,25 +175,39 @@
     }
 
     function fetchAndRenderCalendar(year, month) {
-        $('#event-calendar-container').html(`
-            <div class="text-center">
-                <div class="spinner-border text-primary" role="status"></div>
-                <p class="mt-2 text-dark">Memuat Kalender Event...</p>
-            </div>
-        `);
+        const container = $('#event-calendar-container');
+        
+        container.animate({ opacity: 0.5 }, 200);
         
         $.ajax({
             url: `https://api.aladhan.com/v1/calendarByCity?city=Purwakarta&country=Indonesia&method=20&month=${month}&year=${year}`,
             method: 'GET',
             success: function(response) {
                 if (response.code === 200 && response.data) {
-                    renderCalendar(response.data, year, month);
+                    const newHtml = generateCalendarHtml(response.data, year, month);
+                    container.animate({ opacity: 0 }, 200, function() {
+                        container.html(newHtml);
+                        container.animate({ opacity: 1 }, 200);
+                        
+                        if (typeof bootstrap !== 'undefined') {
+                            const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+                            tooltipTriggerList.map(function (tooltipTriggerEl) {
+                                return new bootstrap.Tooltip(tooltipTriggerEl);
+                            });
+                        }
+                    });
                 } else {
-                    $('#event-calendar-container').html('<p class="text-danger text-center">Gagal memuat kalender.</p>');
+                    container.animate({ opacity: 0 }, 200, function() {
+                        container.html('<p class="text-danger text-center">Gagal memuat kalender.</p>');
+                        container.animate({ opacity: 1 }, 200);
+                    });
                 }
             },
             error: function() {
-                $('#event-calendar-container').html('<p class="text-danger text-center">Terjadi kesalahan koneksi.</p>');
+                container.animate({ opacity: 0 }, 200, function() {
+                    container.html('<p class="text-danger text-center">Terjadi kesalahan koneksi.</p>');
+                    container.animate({ opacity: 1 }, 200);
+                });
             }
         });
     }
@@ -216,7 +230,7 @@
         fetchAndRenderCalendar(currentCalendarYear, currentCalendarMonth);
     });
 
-    function renderCalendar(data, year, month) {
+    function generateCalendarHtml(data, year, month) {
         const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
         const dayNames = ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"];
         
@@ -268,14 +282,7 @@
         });
         
         html += `</div></div>`;
-        $('#event-calendar-container').html(html);
-        
-        if (typeof bootstrap !== 'undefined') {
-            const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-            tooltipTriggerList.map(function (tooltipTriggerEl) {
-                return new bootstrap.Tooltip(tooltipTriggerEl);
-            });
-        }
+        return html;
     }
 
 })(jQuery);
