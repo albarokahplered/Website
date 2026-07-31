@@ -639,6 +639,16 @@ h4, h5, h6, .h4, .h5, .h6 {
     letter-spacing: 1px;
 }
 
+/* Event Hero Text */
+.event-hero-title {
+    font-size: 2.5rem;
+    white-space: nowrap;
+}
+.event-hero-subtitle {
+    font-size: 1.25rem;
+    white-space: nowrap;
+}
+
 /* Mobile Adjustments */
 @media (max-width: 991.98px) {
     /* Navbar Logo and Text */
@@ -660,5 +670,15 @@ h4, h5, h6, .h4, .h5, .h6 {
     }
     #jadwal-sholat-container .rounded.p-3 {
         padding: 0.75rem !important;
+    }
+
+    /* Event Hero Adjustments */
+    .event-hero-title {
+        font-size: 1.75rem;
+        white-space: normal;
+    }
+    .event-hero-subtitle {
+        font-size: 1rem;
+        white-space: normal;
     }
 }
